@@ -1,9 +1,50 @@
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function AuthScreen() {
     const [isSignUp, setIsSignUp] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [error, setError] = useState<string | null>("");
+
+    const theme = useTheme();
+    const router = useRouter();
+
+    const { signUp, signIn } = useAuth();
+
+    const handelAuth = async () => {
+        if (!email || !password) {
+            setError("Please fill in all fields.");
+            return;
+        }
+
+        if(password.length < 6) {
+            setError("Password must be at least 6 characters long.");
+            return;
+        }
+
+        setError(null);
+
+        if (isSignUp) {
+            const error = await signUp(email, password);
+            if (error) {
+                setError(error);
+                return
+            }
+        } else {
+            const error = await signIn(email, password);
+            if (error) {
+                setError(error);
+                return
+            }
+
+            // On successful sign in, navigate to the main app screen
+            router.replace("/");
+        }
+    }
 
     const handleSwitchMode = () => {
         setIsSignUp((prev) => !prev);
@@ -15,11 +56,16 @@ export default function AuthScreen() {
             <View style={styles.content}>
                 <Text style={styles.title} variant="headlineMedium">{isSignUp ? "Create Account" : "Welcome Back"}</Text>
 
-                <TextInput label="Email" autoCapitalize="none" keyboardType="email-address" mode="outlined" style={styles.input} />
+                {/* Input Fields */}
+                <TextInput label="Email" autoCapitalize="none" keyboardType="email-address" mode="outlined" style={styles.input} onChangeText={setEmail}/>
 
-                <TextInput label="Password" autoCapitalize="none" keyboardType="email-address" mode="outlined" style={styles.input} />
+                <TextInput label="Password" autoCapitalize="none" secureTextEntry mode="outlined" style={styles.input} onChangeText={setPassword} />
+
+                {/* Error Message */}
+                {error && <Text style={{ color: theme.colors.error }}>{error}</Text>}
                 
-                <Button mode="contained" style={styles.button}>{isSignUp ? "Sign Up" : "Sign In"}</Button>
+                {/* Action Buttons */}
+                <Button mode="contained" style={styles.button} onPress={handelAuth}>{isSignUp ? "Sign Up" : "Sign In"}</Button>
 
                 <Button mode="text" onPress={handleSwitchMode} style={styles.switchModeButton}>{isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}</Button>
             </View>
