@@ -27,6 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(session);
         } catch (error) {
             setUser(null);
+        } finally {
+            setIsLoadingUser(false);
         }
     }
 
@@ -58,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{user, signUp, signIn}}>
+        <AuthContext.Provider value={{user, isLoadingUser,signUp, signIn}}>
             {children}
         </AuthContext.Provider>
 
