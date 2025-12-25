@@ -1,6 +1,8 @@
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
+import { PaperProvider } from "react-native-paper";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 function RootLayoutContent() {
   const { user, isLoadingUser } = useAuth();
@@ -33,7 +35,11 @@ function RootLayoutContent() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutContent />
+      <PaperProvider>
+        <SafeAreaProvider>
+          <RootLayoutContent />
+        </SafeAreaProvider>
+      </PaperProvider>
     </AuthProvider>
   );
 }
