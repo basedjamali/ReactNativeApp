@@ -28,7 +28,7 @@ export default function AddHabitScreen() {
                 HABITS_COLLECTION_ID, 
                 ID.unique(), 
                 {
-                    user_id: user.$id,
+                    "user-id": user.$id,
                     title,
                     description,
                     frequency,
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f5f5f5",
         justifyContent: "center",
     },
+
     input: {
         marginBottom: 16,
         backgroundColor: "white",
