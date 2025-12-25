@@ -65,7 +65,7 @@ export default function Index() {
         <Button mode="text" onPress={signOut} icon={"logout"}>Sign Out</Button>
       </View>
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Habits List */}
         {habits?.length === 0 ? (
           <View style={styles.emptyState}>
