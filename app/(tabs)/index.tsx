@@ -70,7 +70,12 @@ export default function Index() {
     if (!user) return;
 
     try {
+      const habit = habits?.find(h => h.$id === id);
+      if (!habit) return;
+
       const currentDate = new Date().toISOString();
+      
+      // Create completion record
       await databases.createDocument(DATABASE_ID, COMPLETIONS_COLLECTION_ID, ID.unique(), 
         {
           habit_id: id,
@@ -79,13 +84,11 @@ export default function Index() {
         }
       );
 
-      const habit = habits?.find(h => h.$id === id);
-      if (!habit) return;
-
+      // Update habit with incremented streak
       await databases.updateDocument(DATABASE_ID, HABITS_COLLECTION_ID, id, 
         {
           streak_count: habit.streak_count + 1,
-          last_completed_at: currentDate,
+          last_completed: currentDate,
         }
       );
 
